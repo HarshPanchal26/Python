@@ -4,7 +4,7 @@ import time
     # A decorator is a design pattern in Python that allows you to wrap a function or class with another function, also known as a decorator function, to enhance or modify its behavior.
     
 # How to define a decorator
-        # One way 
+    # One way 
 from typing import Any
 
 
@@ -88,3 +88,122 @@ def perform():
     return 0
 
 print(perform())
+
+
+#  How to pass a variable with decorators 
+
+
+#  Basic three methods 
+
+        # Approach 1: Decorator Factory
+        # Approach 2: Nested Decorators
+        # Approach 3: functools.wraps
+        
+    
+            
+def outer_func(sender_name):
+    def deco_with_variable(func):
+        def inner_body( *args, **kwargs):
+            print("parameter data are args :{0} kwrgs : {1}".format(kwargs , args))
+            value  = func(*args, **kwargs)+" "+sender_name 
+            print(value)
+        return inner_body
+    return deco_with_variable
+
+@outer_func("Decorators")
+def display2(name):
+    return f"I am {name} from"
+
+display2("Harsh")
+
+
+
+
+# While nested decorators and decorator factories achieve similar outcomes by allowing parameters to be passed to decorators, there are differences in their implementation and usage. Nested decorators involve defining multiple decorators and applying them in a chain, while decorator factories use a higher-order function to generate the decorator based on the provided arguments. Nested decorators have a specific order of execution, while decorator factories follow the order in which decorators are applied using the @ syntax.
+
+# The choice between nested decorators and decorator factories depends on the specific requirements and design preferences of your code. Both approaches offer flexibility and the ability to customize the behavior of decorators, allowing you to create more versatile and reusable decorators.
+
+
+
+        # Nested Decorators:
+        
+def log_decorator(func):
+    def wrapper(*args, **kwargs):
+        print("Log: Function", func.__name__, "is called")
+        return func(*args, **kwargs)
+    return wrapper
+
+def timer_decorator(func):
+    import time
+
+    def wrapper(*args, **kwargs):
+        start_time = time.time()
+        result = func(*args, **kwargs)
+        end_time = time.time()
+        execution_time = end_time - start_time
+        print("Timer: Function", func.__name__, "took", execution_time, "seconds")
+        return result
+    return wrapper
+
+@log_decorator
+@timer_decorator
+def greet(name):
+    print("Hello,", name)
+
+greet("John")
+
+
+
+        #  Factory 
+    
+def log_decorator(func):
+    def wrapper(*args, **kwargs):
+        print("Log: Function", func.__name__, "is called")
+        return func(*args, **kwargs)
+    return wrapper
+
+def timer_decorator(func):
+    import time
+
+    def wrapper(*args, **kwargs):
+        start_time = time.time()
+        result = func(*args, **kwargs)
+        end_time = time.time()
+        execution_time = end_time - start_time
+        print("Timer: Function", func.__name__, "took", execution_time, "seconds")
+        return result
+    return wrapper
+
+@log_decorator
+@timer_decorator
+def greet(name):
+    print("Hello,", name)
+
+greet("John")
+
+
+
+#  functool 
+
+
+# Certainly! The functools.wraps decorator from the functools module is commonly used when creating decorators to preserve the original function's metadata such as its name, docstring, and signature. Here's an example:
+
+
+import functools
+
+def decorator_func(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        """Wrapper function docstring."""
+        print("Decorator executed!")
+        return func(*args, **kwargs)
+
+    return wrapper
+
+@decorator_func
+def greet(name):
+    """Greet someone by name."""
+    print("Hello,", name)
+
+print(greet.__name__)
+print(greet.__doc__)
