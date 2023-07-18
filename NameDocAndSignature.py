@@ -38,6 +38,7 @@ def greet(name):
     print("Hello,", name)
 
 signature = inspect.signature(greet)
+
 print(inspect.isgenerator(greet))
 print(signature)  # Output: (name)
 
